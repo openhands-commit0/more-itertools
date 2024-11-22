@@ -71,7 +71,11 @@ def side_effect(func, iterable, chunk_size=None, before=None, after=None):
                 func(item)
                 yield item
         else:
-            for chunk in chunked(iterable, chunk_size):
+            it = iter(iterable)
+            while True:
+                chunk = list(islice(it, chunk_size))
+                if not chunk:
+                    break
                 func(chunk)
                 for item in chunk:
                     yield item
