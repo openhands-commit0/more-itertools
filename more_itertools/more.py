@@ -62,29 +62,27 @@ def side_effect(func, iterable, chunk_size=None, before=None, after=None):
         [0, 1, 2, 3, 4, 5]
 
     """
-    def wrapped():
-        if before is not None:
-            before()
+    if before is not None:
+        before()
 
-        try:
-            if chunk_size is None:
-                for item in iterable:
-                    func(item)
+    try:
+        if chunk_size is None:
+            for item in iterable:
+                func(item)
+                yield item
+        else:
+            it = iter(iterable)
+            while True:
+                chunk = list(islice(it, chunk_size))
+                if not chunk:
+                    break
+                func(chunk)
+                for item in chunk:
                     yield item
-            else:
-                it = iter(iterable)
-                while True:
-                    chunk = list(islice(it, chunk_size))
-                    if not chunk:
-                        break
-                    func(chunk)
-                    for item in chunk:
-                        yield item
-        finally:
-            if after is not None:
-                after()
-
-    return iter(wrapped())
+    finally:
+        if after is not None:
+            after()
+    return
 
 
 def chunked(iterable, n, strict=False):
