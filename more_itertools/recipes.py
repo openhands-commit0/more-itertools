@@ -217,7 +217,9 @@ def _pairwise(iterable):
     On Python 3.10 and above, this is an alias for :func:`itertools.pairwise`.
 
     """
-    pass
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 try:
     from itertools import pairwise as itertools_pairwise
 except ImportError:
