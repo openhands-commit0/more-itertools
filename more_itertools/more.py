@@ -35,7 +35,20 @@ def chunked(iterable, n, strict=False):
     list is yielded.
 
     """
-    pass
+    if n is None:
+        yield list(iterable)
+        return
+
+    iterator = iter(iterable)
+    while True:
+        chunk = list(islice(iterator, n))
+        if not chunk:
+            return
+        if strict and len(chunk) != n:
+            if n is None:
+                raise ValueError("n must not be None when using strict mode.")
+            raise ValueError("iterable is not divisible by n")
+        yield chunk
 
 def first(iterable, default=_marker):
     """Return the first item of *iterable*, or *default* if *iterable* is
@@ -54,7 +67,12 @@ def first(iterable, default=_marker):
     ``next(iter(iterable), default)``.
 
     """
-    pass
+    try:
+        return next(iter(iterable))
+    except StopIteration:
+        if default is _marker:
+            raise ValueError('first() was called on an empty iterable')
+        return default
 
 def last(iterable, default=_marker):
     """Return the last item of *iterable*, or *default* if *iterable* is
@@ -68,7 +86,24 @@ def last(iterable, default=_marker):
     If *default* is not provided and there are no items in the iterable,
     raise ``ValueError``.
     """
-    pass
+    try:
+        if hasattr(iterable, '__getitem__'):
+            return iterable[-1]
+        
+        it = iter(iterable)
+        try:
+            item = next(it)
+        except StopIteration:
+            if default is _marker:
+                raise ValueError('last() was called on an empty iterable')
+            return default
+            
+        for item in it:
+            pass
+        return item
+    except (TypeError, KeyError, AttributeError):
+        # Handle mappings and other objects that don't support indexing
+        return last(list(iterable), default)
 
 def nth_or_last(iterable, n, default=_marker):
     """Return the nth or the last item of *iterable*,
@@ -84,7 +119,22 @@ def nth_or_last(iterable, n, default=_marker):
     If *default* is not provided and there are no items in the iterable,
     raise ``ValueError``.
     """
-    pass
+    it = iter(iterable)
+    try:
+        item = next(it)
+    except StopIteration:
+        if default is _marker:
+            raise ValueError('nth_or_last() was called on an empty iterable')
+        return default
+
+    try:
+        for i, item in enumerate(chain([item], it)):
+            if i == n:
+                return item
+        return item  # If we get here, we ran out of items before reaching n
+    except (TypeError, KeyError, AttributeError):
+        # Handle mappings and other objects that don't support indexing
+        return nth_or_last(list(iterable), n, default)
 
 class peekable:
     """Wrap an iterator to allow lookahead and prepending elements.
