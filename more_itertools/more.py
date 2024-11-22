@@ -16,6 +16,21 @@ from .recipes import _marker, _zip_equal, UnequalIterablesError, consume, flatte
 __all__ = ['AbortThread', 'SequenceView', 'UnequalIterablesError', 'adjacent', 'all_unique', 'always_iterable', 'always_reversible', 'bucket', 'callback_iter', 'chunked', 'chunked_even', 'circular_shifts', 'collapse', 'combination_index', 'combination_with_replacement_index', 'consecutive_groups', 'constrained_batches', 'consumer', 'count_cycle', 'countable', 'dft', 'difference', 'distinct_combinations', 'distinct_permutations', 'distribute', 'divide', 'doublestarmap', 'duplicates_everseen', 'duplicates_justseen', 'classify_unique', 'exactly_n', 'filter_except', 'filter_map', 'first', 'gray_product', 'groupby_transform', 'ichunked', 'iequals', 'idft', 'ilen', 'interleave', 'interleave_evenly', 'interleave_longest', 'intersperse', 'is_sorted', 'islice_extended', 'iterate', 'iter_suppress', 'join_mappings', 'last', 'locate', 'longest_common_prefix', 'lstrip', 'make_decorator', 'map_except', 'map_if', 'map_reduce', 'mark_ends', 'minmax', 'nth_or_last', 'nth_permutation', 'nth_product', 'nth_combination_with_replacement', 'numeric_range', 'one', 'only', 'outer_product', 'padded', 'partial_product', 'partitions', 'peekable', 'permutation_index', 'powerset_of_sets', 'product_index', 'raise_', 'repeat_each', 'repeat_last', 'replace', 'rlocate', 'rstrip', 'run_length', 'sample', 'seekable', 'set_partitions', 'side_effect', 'sliced', 'sort_together', 'split_after', 'split_at', 'split_before', 'split_into', 'split_when', 'spy', 'stagger', 'strip', 'strictly_n', 'substrings', 'substrings_indexes', 'takewhile_inclusive', 'time_limited', 'unique_in_window', 'unique_to_each', 'unzip', 'value_chain', 'windowed', 'windowed_complete', 'with_iter', 'zip_broadcast', 'zip_equal', 'zip_offset']
 _fsumprod = getattr(math, 'sumprod', lambda x, y: fsum(map(mul, x, y)))
 
+def raise_(exception, *args):
+    """Raise an exception in a context manager.
+
+    Used for conditional exception raising:
+
+        >>> it = ['a', 'b']
+        >>> raise_(RuntimeError, 'Something bad happened') if len(it) <= 2 else it[2]
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Something bad happened
+
+    """
+    raise exception(*args)
+
+
 def chunked(iterable, n, strict=False):
     """Break *iterable* into lists of length *n*:
 
