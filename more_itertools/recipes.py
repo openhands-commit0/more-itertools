@@ -225,8 +225,7 @@ try:
     pairwise = itertools_pairwise
 except ImportError:
     pairwise = _pairwise
-
-pairwise.__doc__ = _pairwise.__doc__
+    pairwise.__doc__ = _pairwise.__doc__
 
 class UnequalIterablesError(ValueError):
 
