@@ -50,7 +50,7 @@ def take(n, iterable):
         [0, 1, 2]
 
     """
-    pass
+    return list(islice(iterable, n))
 
 def tabulate(function, start=0):
     """Return an iterator over the results of ``func(start)``,
