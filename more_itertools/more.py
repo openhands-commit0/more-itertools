@@ -155,9 +155,15 @@ def last(iterable, default=_marker):
     raise ``ValueError``.
     """
     try:
-        if hasattr(iterable, '__getitem__'):
+        # Try to get the last element using sequence protocol
+        if isinstance(iterable, Sequence):
+            if not iterable:
+                if default is _marker:
+                    raise ValueError('last() was called on an empty iterable')
+                return default
             return iterable[-1]
         
+        # Fall back to iterating
         it = iter(iterable)
         try:
             item = next(it)
