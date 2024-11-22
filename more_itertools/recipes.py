@@ -23,6 +23,18 @@ except TypeError:
     _zip_strict = zip
 else:
     _zip_strict = partial(zip, strict=True)
+
+def _zip_equal(*iterables):
+    """Like zip(), but ensures all iterables have the same length."""
+    # zip_longest() wouldn't work here because it suppresses length differences
+    sentinel = object()
+    result = []
+    for combo in zip_longest(*iterables, fillvalue=sentinel):
+        if any(x is sentinel for x in combo):
+            raise UnequalIterablesError()
+        result.append(combo)
+    return result
+
 _sumprod = getattr(math, 'sumprod', lambda x, y: dotproduct(x, y))
 
 def take(n, iterable):
