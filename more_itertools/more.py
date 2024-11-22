@@ -77,11 +77,11 @@ def side_effect(func, iterable, chunk_size=None, before=None, after=None):
                 if not chunk:
                     break
                 func(chunk)
-                yield from chunk
+                for item in chunk:
+                    yield item
     finally:
         if after is not None:
             after()
-    return
 
 
 def chunked(iterable, n, strict=False):
