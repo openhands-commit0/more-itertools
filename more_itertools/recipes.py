@@ -37,6 +37,24 @@ def _zip_equal(*iterables):
 
 _sumprod = getattr(math, 'sumprod', lambda x, y: dotproduct(x, y))
 
+def batched(iterable, n, *, strict=False):
+    """Batch data into lists of length *n*. The last batch may be shorter.
+
+    >>> list(batched('ABCDEFG', 3))
+    [['A', 'B', 'C'], ['D', 'E', 'F'], ['G']]
+
+    This recipe is from the ``itertools`` docs.
+    """
+    if n < 1:
+        raise ValueError('n must be at least one')
+    it = iter(iterable)
+    while True:
+        batch = list(islice(it, n))
+        if not batch:
+            break
+        yield batch
+
+
 def take(n, iterable):
     """Return first *n* items of the iterable as a list.
 
