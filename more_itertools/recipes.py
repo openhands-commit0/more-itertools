@@ -222,10 +222,11 @@ def _pairwise(iterable):
     return zip(a, b)
 try:
     from itertools import pairwise as itertools_pairwise
+    pairwise = itertools_pairwise
 except ImportError:
     pairwise = _pairwise
-else:
-    pairwise.__doc__ = _pairwise.__doc__
+
+pairwise.__doc__ = _pairwise.__doc__
 
 class UnequalIterablesError(ValueError):
 
